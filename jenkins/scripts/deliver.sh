@@ -23,4 +23,12 @@ set +x
 echo 'The following command runs and outputs the execution of your Java'
 echo 'application (which Jenkins built using Maven) to the Jenkins UI.'
 set -x
-java -jar target/${NAME}-${VERSION}.jar
+java -jar target/${NAME}-${VERSION}.jar &
+sleep 1
+echo $! > .pidfile
+set -x
+
+echo 'Now...'
+echo 'Visit http://localhost:8000 to see your Simple Java application in action.'
+echo '(This is why you specified the "args ''-p 8000:8000''" parameter when you'
+echo 'created your initial Pipeline as a Jenkinsfile.)'

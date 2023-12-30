@@ -1,6 +1,6 @@
 node {
   checkout scm
-  docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
+  docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2 -p 8000:8000') {
     stage('Build') {
       sh 'mvn -B -DskipTests clean package'
     }
@@ -17,6 +17,11 @@ node {
     }
     stage('Manual Approval') {
       input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk mengakhiri)'
+    }
+    stage('Deploy') {
+      sh './jenkins/scripts/deliver.sh'
+      sh 'sleep 60'
+      sh './jenkins/scripts/kill.sh'
     }
   }
 }
