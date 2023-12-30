@@ -24,63 +24,76 @@ package com.mycompany.app;
 //     }
 // }
 
+import static org.junit.Assert.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import spark.Spark;
-
-import static org.junit.Assert.assertEquals;
-import static spark.Spark.awaitInitialization;
 
 public class AppTest {
 
+    private static HttpServerMock serverMock;
+    private static final int PORT = 8001; // Using a different port for testing
+
     @BeforeClass
-    public static void setUp() {
-        App.main(null);
-        awaitInitialization();
+    public static void setUp() throws Exception {
+        serverMock = new HttpServerMock(PORT);
+        serverMock.start();
     }
 
     @AfterClass
     public static void tearDown() {
-        Spark.stop();
+        serverMock.stop();
     }
 
     @Test
-    public void testHelloEndpoint() {
-        TestResponse response = TestUtil.request("GET", "/hello");
-        assertEquals(200, response.status);
-        assertEquals("Hello World!", response.body);
+    public void testAppResponse() throws IOException {
+        URL url = new URL("http://localhost:" + PORT + "/");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        assertEquals(200, responseCode);
+
+        String response = readResponse(connection.getInputStream());
+        assertTrue(response.contains("Hello CBSA!!!!!!"));
     }
 
-    // Helper class for testing
-    private static class TestResponse {
-        public final String body;
-        public final int status;
-
-        public TestResponse(String body, int status) {
-            this.body = body;
-            this.status = status;
+    private String readResponse(InputStream input) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = input.read(buffer)) != -1) {
+            output.write(buffer, 0, length);
         }
-    }
-
-    private static class TestUtil {
-        public static TestResponse request(String method, String path) {
-            try {
-                java.net.URL url = new java.net.URL("http://localhost:8089" + path);
-                java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
-                connection.setRequestMethod(method);
-
-                connection.connect();
-
-                String body = null;
-                if (connection.getResponseCode() != 204) { // No Content
-                    body = new java.util.Scanner(connection.getInputStream(), java.nio.charset.StandardCharsets.UTF_8).useDelimiter("\\A").next();
-                }
-
-                return new TestResponse(body, connection.getResponseCode());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+        return output.toString("UTF-8");
     }
 }
+
+// Mock class to run HttpServer in a separate thread for testing purposes
+class HttpServerMock {
+    private HttpServer server;
+    private int port;
+
+    HttpServerMock(int port) {
+        this.port = port;
+    }
+
+    void start() throws IOException {
+        server = HttpServer.create(new InetSocketAddress(port), 0);
+        server.createContext("/", new App.MyHandler());
+        server.setExecutor(null);
+        server.start();
+    }
+
+    void stop() {
+        server.stop(0);
+    }
+}
+
