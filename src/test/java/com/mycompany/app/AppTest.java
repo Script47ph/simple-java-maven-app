@@ -36,7 +36,7 @@ public class AppTest {
 
     @BeforeClass
     public static void setUp() {
-        SimpleApp.main(null);
+        App.main(null);
         awaitInitialization();
     }
 
