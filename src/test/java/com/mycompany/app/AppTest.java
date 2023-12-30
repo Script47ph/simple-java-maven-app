@@ -32,7 +32,7 @@ import spark.Spark;
 import static org.junit.Assert.assertEquals;
 import static spark.Spark.awaitInitialization;
 
-public class SimpleAppTest {
+public class AppTest {
 
     @BeforeClass
     public static void setUp() {

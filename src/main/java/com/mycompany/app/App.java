@@ -20,7 +20,7 @@ package com.mycompany.app;
 
 import static spark.Spark.*;
 
-public class SimpleApp {
+public class App {
     public static void main(String[] args) {
         // Define route
         get("/hello", (req, res) -> "Hello Sekai!");
