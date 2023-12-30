@@ -15,5 +15,8 @@ node {
     finally {
       junit 'target/surefire-reports/*.xml'
     }
+    stage('Manual Approval') {
+      input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk mengakhiri)'
+    }
   }
 }
