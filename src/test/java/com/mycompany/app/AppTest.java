@@ -66,7 +66,7 @@ public class AppTest {
     private static class TestUtil {
         public static TestResponse request(String method, String path) {
             try {
-                java.net.URL url = new java.net.URL("http://localhost:8080" + path);
+                java.net.URL url = new java.net.URL("http://localhost:8089" + path);
                 java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
                 connection.setRequestMethod(method);
 
