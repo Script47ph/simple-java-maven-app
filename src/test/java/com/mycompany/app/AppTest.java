@@ -32,6 +32,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
