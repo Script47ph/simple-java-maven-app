@@ -14,6 +14,20 @@
       <version>5.9.2</version>
       <scope>test</scope>
     </dependency>
+        <!-- SparkJava untuk web server -->
+    <dependency>
+        <groupId>com.sparkjava</groupId>
+        <artifactId>spark-core</artifactId>
+        <version>2.9.3</version>
+    </dependency>
+
+    <!-- JUnit untuk unit testing -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
